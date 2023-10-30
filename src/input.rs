@@ -6,7 +6,7 @@
 ///
 /// Contains the key code of the pressed key and the register where
 /// the processor should store it in.
-#[derive(serde::Serialize, serde::Deserialize, Clone, Copy)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy)]
 pub struct KeyRequestResponse {
     /// The key code of the pressed key.
     pub key_code: u8,
@@ -16,7 +16,7 @@ pub struct KeyRequestResponse {
 
 /// Input system for the [`super::Chip8`]. Keeps track of the state of all 16 keys
 /// and any key press requests from programs.
-#[derive(serde::Serialize, serde::Deserialize, Default)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct Input {
     /// The current state of all 16 keys.
     state: [bool; 16],

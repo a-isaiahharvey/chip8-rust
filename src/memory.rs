@@ -33,7 +33,7 @@ const FONT: [u8; 80] = [
 /// The [`Memory`] struct represents the memory of a Chip8 system. It contains
 /// a fixed-size array of [`u8`] values that can be accessed using the [`Index`]
 /// and [`IndexMut`] traits.
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Memory {
     #[serde(with = "serde_big_array::BigArray")]
     memory: [u8; MEMORY_SIZE],

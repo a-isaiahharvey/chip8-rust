@@ -18,6 +18,7 @@ const STARTING_PC: usize = 0x200;
 
 /// Describes how the program counter should be updated after
 /// executing an instruction.
+#[derive(Debug)]
 enum ProgramCounterUpdate {
     /// Go directly to the next instruction (pc + 2)
     Next,
@@ -30,7 +31,7 @@ enum ProgramCounterUpdate {
 }
 
 /// This structs contains information about an instruction in a computer program.
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Instruction {
     /// An unsigned integer representing the memory address where the instruction is located.
     pub address: usize,
@@ -43,7 +44,7 @@ pub struct Instruction {
 }
 
 /// This struct represents the central processing unit of a computer.
-#[derive(serde::Serialize, serde::Deserialize, Default)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct Cpu {
     /// An array of 16 unsigned 8-bit integers representing the Vx registers.
     pub v: [u8; 16],

@@ -2,6 +2,7 @@
 //! optimized code that leverages the latest Rust language features and
 //! compiler optimizations. This ensures that the emulator runs smoothly and
 //! efficiently on modern hardware, even when running demanding Chip8 games.
+#![warn(missing_debug_implementations)]
 
 use crate::processor::Cpu;
 
@@ -12,7 +13,7 @@ pub mod memory;
 pub mod processor;
 
 /// The [`Bus`] struct contains fields for different components of a computer system
-#[derive(Default, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Bus {
     /// An instance of the [`clock::Clock`] struct, which represents the system
     /// clock of the computer. This is used to synchronize the different
@@ -36,7 +37,7 @@ pub struct Bus {
 }
 
 /// The [`Chip8`] struct represents a computer system that uses the Chip-8 virtual machine.
-#[derive(Default, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Chip8 {
     /// An instance of the [`Cpu`] struct, which represents the CPU of
     /// the system. This is responsible for executing the instructions in

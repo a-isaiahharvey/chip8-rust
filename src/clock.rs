@@ -15,7 +15,7 @@ use std::time::{Duration, Instant};
 
 /// Handles the updating of the [`super::Chip8`] sound and delay timers. The `delay_timer` and
 /// the `sound_timer` are decremented by `1` at a rate of `60Hz`.
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Clock {
     /// The current value of the delay timer.
     pub delay_timer: u8,
@@ -93,3 +93,37 @@ impl Clock {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::thread;
+    use std::time::Duration;
+
+    #[test]
+    fn test_update() {
+        let mut clock = Clock::new();
+
+        // Set initial values for the timers
+        clock.delay_timer = 10;
+        clock.sound_timer.store(10, Ordering::SeqCst);
+
+        // Call the update method
+        clock.update();
+
+        // The timers should not have changed yet because not enough time has passed
+        assert_eq!(clock.delay_timer, 10);
+        assert_eq!(clock.sound_timer.load(Ordering::SeqCst), 10);
+
+        // Sleep for a bit more than 1/60th of a second
+        thread::sleep(Duration::from_millis(17));
+
+        // Call the update method again
+        clock.update();
+
+        // Now the timers should have decremented
+        assert_eq!(clock.delay_timer, 9);
+        assert_eq!(clock.sound_timer.load(Ordering::SeqCst), 9);
+    }
+}
+

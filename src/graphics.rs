@@ -29,7 +29,7 @@ pub const DEFAULT_BACKGROUND: Rgb = Rgb {
 /// A struct representing an RGB color with 8 bits per channel. This struct
 /// holds 3 fields of [`u8`] values representing the red, green, and blue
 /// channels of the color.
-#[derive(serde::Serialize, serde::Deserialize, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy, PartialEq, Eq)]
 pub struct Rgb {
     /// Red color
     pub red: u8,
@@ -62,7 +62,7 @@ impl Rgb {
 /// and background colors. The buffer supports drawing single bytes (8 pixels)
 /// with a given position and data, and keeps track of collisions between
 /// active pixels.
-#[derive(serde::Serialize, serde::Deserialize, Clone, Copy)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy)]
 pub struct Buffer {
     #[serde(with = "serde_big_array::BigArray")]
     vram: [Rgb; PIXEL_COUNT],
@@ -165,5 +165,50 @@ impl Buffer {
     #[inline]
     pub fn clear(&mut self) {
         self.vram = [self.background_rgb; PIXEL_COUNT];
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_draw_byte() {
+        let mut buffer = Buffer::new();
+
+        // Draw a byte at position (0, 0) with data 0b10000000
+        let collision = buffer.draw_byte(0, 0, 0b10000000);
+
+        // There should be no collision
+        assert_eq!(collision, false);
+
+        // The first pixel should be the foreground color
+        assert_eq!(buffer.vram[0], buffer.foreground_rgb);
+
+        // The rest of the pixels should be the background color
+        assert_eq!(buffer.vram[1..8], [buffer.background_rgb; 7]);
+
+        // Draw another byte at the same position with data 0b10000000
+        let collision = buffer.draw_byte(0, 0, 0b10000000);
+
+        // There should be a collision this time
+        assert_eq!(collision, true);
+
+        // All pixels should now be the background color
+        assert_eq!(buffer.vram[0..8], [buffer.background_rgb; 8]);
+    }
+
+    #[test]
+    fn test_clear() {
+        let mut buffer = Buffer::new();
+
+        // Draw a byte at position (0, 0) with data 0b11111111
+        buffer.draw_byte(0, 0, 0b11111111);
+
+        // Clear the buffer
+        buffer.clear();
+
+        // All pixels should now be the background color
+        assert_eq!(buffer.vram, [buffer.background_rgb; PIXEL_COUNT]);
     }
 }
