@@ -2,7 +2,7 @@
 //! optimized code that leverages the latest Rust language features and
 //! compiler optimizations. This ensures that the emulator runs smoothly and
 //! efficiently on modern hardware, even when running demanding Chip8 games.
-#![warn(missing_debug_implementations)]
+#![warn(missing_debug_implementations, clippy::pedantic, clippy::nursery)]
 
 use crate::processor::Cpu;
 
