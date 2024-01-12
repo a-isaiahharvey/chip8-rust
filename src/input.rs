@@ -78,7 +78,7 @@ impl Input {
 
     /// Returns whether the input system is currently waiting for user input.
     #[must_use]
-    pub fn waiting(&self) -> bool {
+    pub const fn waiting(&self) -> bool {
         self.waiting
     }
 

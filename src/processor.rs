@@ -301,7 +301,7 @@ impl Cpu {
         }
     }
 
-    fn op_fx65(&mut self, x: usize, bus: &mut Bus) -> (ProgramCounterUpdate, String) {
+    fn op_fx65(&mut self, x: usize, bus: &Bus) -> (ProgramCounterUpdate, String) {
         let display = format!("Read memory at I into V0 to V{x:X}");
         for i in 0..=x {
             self.v[i] = bus.memory[self.i];
@@ -339,7 +339,7 @@ impl Cpu {
         (ProgramCounterUpdate::Next, display)
     }
 
-    fn op_fx18(&mut self, bus: &mut Bus, x: usize) -> (ProgramCounterUpdate, String) {
+    fn op_fx18(&mut self, bus: &Bus, x: usize) -> (ProgramCounterUpdate, String) {
         let display = format!("Set sound timer to V{x:X} ({})", self.v[x]);
         (*bus.clock.sound_timer).store(self.v[x], std::sync::atomic::Ordering::SeqCst);
         (ProgramCounterUpdate::Next, display)
@@ -351,13 +351,13 @@ impl Cpu {
         (ProgramCounterUpdate::Next, display)
     }
 
-    fn op_fx07(&mut self, bus: &mut Bus, x: usize) -> (ProgramCounterUpdate, String) {
+    fn op_fx07(&mut self, bus: &Bus, x: usize) -> (ProgramCounterUpdate, String) {
         let display = format!("Set V{x:X} to delay timer ({})", bus.clock.delay_timer);
         self.v[x] = bus.clock.delay_timer;
         (ProgramCounterUpdate::Next, display)
     }
 
-    fn op_exa1(&mut self, bus: &mut Bus, x: usize) -> (ProgramCounterUpdate, String) {
+    fn op_exa1(&mut self, bus: &Bus, x: usize) -> (ProgramCounterUpdate, String) {
         let not_pressed = !bus.input.is_key_pressed(self.v[x]);
         let display = format!(
             "Skip next instr if key code {:#X} not pressed ({not_pressed})",
@@ -370,7 +370,7 @@ impl Cpu {
         }
     }
 
-    fn op_ex9e(&mut self, bus: &mut Bus, x: usize) -> (ProgramCounterUpdate, String) {
+    fn op_ex9e(&mut self, bus: &Bus, x: usize) -> (ProgramCounterUpdate, String) {
         let pressed = bus.input.is_key_pressed(self.v[x]);
         let display = format!("Skip instr if key {:#X} pressed ({pressed})", self.v[x]);
         if pressed {

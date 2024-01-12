@@ -42,13 +42,13 @@ pub struct Rgb {
 impl Rgb {
     /// Converts struct to an array of 3 [`u8`]
     #[must_use]
-    pub fn as_array(&self) -> [u8; 3] {
+    pub const fn as_array(&self) -> [u8; 3] {
         [self.red, self.green, self.blue]
     }
 
     /// Converts array into [`Rgb`]
     #[must_use]
-    pub fn from_array(array: [u8; 3]) -> Self {
+    pub const fn from_array(array: [u8; 3]) -> Self {
         Self {
             red: array[0],
             green: array[1],
@@ -177,10 +177,10 @@ mod tests {
         let mut buffer = Buffer::new();
 
         // Draw a byte at position (0, 0) with data 0b10000000
-        let collision = buffer.draw_byte(0, 0, 0b10000000);
+        let collision = buffer.draw_byte(0, 0, 0b1000_0000);
 
         // There should be no collision
-        assert_eq!(collision, false);
+        assert!(!collision);
 
         // The first pixel should be the foreground color
         assert_eq!(buffer.vram[0], buffer.foreground_rgb);
@@ -189,10 +189,10 @@ mod tests {
         assert_eq!(buffer.vram[1..8], [buffer.background_rgb; 7]);
 
         // Draw another byte at the same position with data 0b10000000
-        let collision = buffer.draw_byte(0, 0, 0b10000000);
+        let collision = buffer.draw_byte(0, 0, 0b1000_0000);
 
         // There should be a collision this time
-        assert_eq!(collision, true);
+        assert!(collision);
 
         // All pixels should now be the background color
         assert_eq!(buffer.vram[0..8], [buffer.background_rgb; 8]);
@@ -203,7 +203,7 @@ mod tests {
         let mut buffer = Buffer::new();
 
         // Draw a byte at position (0, 0) with data 0b11111111
-        buffer.draw_byte(0, 0, 0b11111111);
+        buffer.draw_byte(0, 0, 0b1111_1111);
 
         // Clear the buffer
         buffer.clear();
